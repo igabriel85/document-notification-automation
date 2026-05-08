@@ -112,12 +112,11 @@ runtime: "python"
 # Created timestamp — set automatically by `func create`, do not edit.
 created: <generated timestamp>"
 
-# Invocation format:
+# template format:
 #   - "cloudevent" → framework expects a CloudEvent; wraps the function with
 #                    the functions-framework @cloud_event decorator automatically.
 #   - "http"       → plain HTTP handler.
-invocation:
-  format: "cloudevent"
+template: "event"
 
 build:
   # Builder strategy: "pack" (Cloud Native Buildpacks, default) or "s2i".
@@ -135,25 +134,19 @@ run:
   envs: []
   # Persistent volume mounts — not needed for this function.
   volumes: []
-
-deploy:
-  namespace: "na"
-  # Extra annotations added to the generated KService.
-  annotations: {}
-  # Knative Serving scaling options.
-  options:
-    scale:
-      min: 0        # Scale to zero when idle.
-      max: 5        # Maximum replicas under load.
-      target: 100   # Concurrent requests per pod before a new pod is started.
-  labels: []
+  
+options:
+  scale:
+    min: 0        # Scale to zero when idle.
+    max: 5        # Maximum replicas under load.
+    target: 100   # Concurrent requests per pod before a new pod is started.
+labels: []
 ```
 
 
 !!! warning Important fields to review before deploying
     - `image` — must point to a registry you can push to.
     - `namespace` — must match the namespace where your Broker lives.
-    - `invocation.format` — must be `cloudevent` to receive CloudEvents from the Trigger.
 
 ### Function Source Code
 
